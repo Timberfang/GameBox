@@ -4,7 +4,9 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var TestGame = Input.NewGame();
+            Console.Clear();
+            Console.WriteLine(TestGame.ToString());
         }
     }
 }
