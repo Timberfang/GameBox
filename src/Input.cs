@@ -1,6 +1,6 @@
 using Spectre.Console;
 
-namespace GameVault;
+namespace GameBox;
 
 public static class Input
 {

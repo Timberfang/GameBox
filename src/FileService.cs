@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace GameVault;
+namespace GameBox;
 
 public static class FileService
 {

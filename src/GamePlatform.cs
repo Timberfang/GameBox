@@ -1,4 +1,4 @@
-﻿namespace GameVault;
+﻿namespace GameBox;
 
 public enum GamePlatform
 {
