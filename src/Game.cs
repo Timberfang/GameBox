@@ -11,7 +11,7 @@ public class Game
     // public bool HasCover { get; } TODO
     public bool HasDeveloper { get { return null != Developer; } }
     public bool HasPublisher { get { return null != Publisher; } }
-    public static readonly Dictionary<GamePlatform, string > GamePlatformName = new()
+    public static readonly Dictionary<GamePlatform, string> GamePlatformName = new()
     {
         { GamePlatform.PC, "PC (Windows)" },
         { GamePlatform.N3DS, "Nintendo 3DS" },
@@ -20,11 +20,17 @@ public class Game
         { GamePlatform.NWiiU, "Nintendo Wii U" }
     };
 
+    public Game()
+    {
+        Name = string.Empty;
+        Description = string.Empty;
+    }
+
     public Game(string name, string? description = null, GamePlatform? platform = null, int year = 1970, string? developer = null, string? publisher = null)
     {
         Name = name;
         Description = description ?? string.Empty;
-        Platform = platform ?? GamePlatform.None;
+        Platform = platform ?? GamePlatform.PC;
         Year = year;
         Developer = developer;
         Publisher = publisher;

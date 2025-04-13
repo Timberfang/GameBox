@@ -6,6 +6,5 @@ public enum GamePlatform
     N3DS,
     N64,
     NSwitch,
-    NWiiU,
-    None
+    NWiiU
 }
