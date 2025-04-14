@@ -1,4 +1,5 @@
 using Spectre.Console;
+using GameBox.Media;
 
 namespace GameBox;
 

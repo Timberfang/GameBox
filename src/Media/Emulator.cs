@@ -1,4 +1,4 @@
-namespace GameBox;
+namespace GameBox.Media;
 
 public record Emulator
 {
