@@ -29,6 +29,7 @@ public class Game : IMedia
         Description = description ?? string.Empty;
         Year = year;
         Creator = creator;
+        Cover = "cover.jpg";
         Platform = platform ?? GamePlatform.PC;
     }
 

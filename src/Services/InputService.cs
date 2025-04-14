@@ -13,7 +13,8 @@ public static class Input
             AnsiConsole.Ask<string>("Name:"),
             AnsiConsole.Ask<string>("Description:"),
             GetGamePlatform(),
-            AnsiConsole.Ask<int>("Release Year:")
+            AnsiConsole.Ask<int>("Release Year:"),
+            AnsiConsole.Ask<string>("Creator:")
         );
         return output;
     }
@@ -22,7 +23,7 @@ public static class Input
     {
         return AnsiConsole.Prompt(
             new SelectionPrompt<GamePlatform>()
-                .Title("What [blue]platform[/] is this game for?")
+                .Title("Choose a [blue]platform[/] for this game:")
                 .AddChoices(Game.GamePlatformName.Keys)
                 .UseConverter(x => Game.GamePlatformName[x])
         );
