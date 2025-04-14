@@ -1,7 +1,7 @@
 using System.Text.Json;
 using GameBox.Media;
 
-namespace GameBox;
+namespace GameBox.Services;
 
 public static class FileService
 {

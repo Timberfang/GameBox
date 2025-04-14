@@ -1,4 +1,6 @@
-﻿namespace GameBox
+﻿using GameBox.Services;
+
+namespace GameBox
 {
     internal class Program
     {

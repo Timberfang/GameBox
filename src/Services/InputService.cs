@@ -1,7 +1,7 @@
 using Spectre.Console;
 using GameBox.Media;
 
-namespace GameBox;
+namespace GameBox.Services;
 
 public static class Input
 {
