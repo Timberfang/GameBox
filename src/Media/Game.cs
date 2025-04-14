@@ -8,6 +8,8 @@ public class Game : IMedia
     public string? Creator { get; set; }
     public string? Cover { get; set; }
     public GamePlatform Platform { get; set; }
+    public MediaType Type => MediaType.Game;
+
     public static readonly Dictionary<GamePlatform, string> GamePlatformName = new()
     {
         { GamePlatform.PC, "PC (Windows)" },

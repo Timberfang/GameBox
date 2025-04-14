@@ -7,4 +7,5 @@ public interface IMedia
     public int Year { get; set; }
     public string? Creator { get; set; }
     public string? Cover { get; set; }
+    public MediaType Type { get; }
 }

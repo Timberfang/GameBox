@@ -6,60 +6,36 @@ namespace GameBox.Services;
 public static class FileService
 {
     private static readonly string ConfigPath = Path.Join(Environment.CurrentDirectory, "config");
-    private static readonly string GamePath = Path.Combine(ConfigPath, "games");
-    private static readonly string EmulatorPath = Path.Combine(ConfigPath, "emulators");
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         IgnoreReadOnlyProperties = true,
         WriteIndented = true
     };
 
-    public static IEnumerable<string> GetGames()
+    public static IEnumerable<string> GetMedia(MediaType type)
     {
-        Initialize();
-        return Directory.GetFiles(GamePath, "*.json");
+        Initialize(type);
+        return Directory.GetFiles(GetLibraryPath(type), "*.json");
     }
 
-    public static void SaveGame(Game game)
+    public static void SaveMedia<T>(T media) where T : IMedia
     {
-        Initialize();
-        string TargetPath = Path.Combine(GamePath, game.Name + ".json");
-        Serialize(game, TargetPath);
+        Initialize(media.Type);
+        string TargetPath = Path.Combine(GetLibraryPath(media.Type), media.Name + ".json");
+        Serialize(media, TargetPath);
     }
 
-    public static Game LoadGame(string name)
+    public static T LoadMedia<T>(string name, MediaType type)
     {
-        Initialize();
-        string TargetPath = Path.Combine(GamePath, name);
+        Initialize(type);
+        string TargetPath = Path.Combine(GetLibraryPath(type), name);
         if (!TargetPath.EndsWith(".json")) { TargetPath += ".json"; }
-        return Deserialize<Game>(TargetPath);
+        return Deserialize<T>(TargetPath);
     }
 
-    public static IEnumerable<string> GetEmulators()
+    private static void Initialize(MediaType type)
     {
-        Initialize();
-        return Directory.GetFiles(EmulatorPath, "*.json");
-    }
-
-    public static IEnumerable<Emulator> GetEmulatorConfigs()
-    {
-        Initialize();
-        List<Emulator> emulators = [];
-        foreach (string EmulatorName in GetEmulators()) { emulators.Add(LoadEmulator(EmulatorName)); }
-        return emulators;
-    }
-
-    public static Emulator LoadEmulator(string name)
-    {
-        Initialize();
-        string TargetPath = Path.Combine(EmulatorPath, name);
-        if (!TargetPath.EndsWith(".json")) { TargetPath += ".json"; }
-        return Deserialize<Emulator>(TargetPath);
-    }
-
-    private static void Initialize()
-    {
-        string[] Directories = [ConfigPath, GamePath, EmulatorPath];
+        string[] Directories = [ConfigPath, GetLibraryPath(type)];
 
         foreach (string DirectoryPath in Directories) { Directory.CreateDirectory(DirectoryPath); }
     }
@@ -75,4 +51,6 @@ public static class FileService
         if (!File.Exists(target)) { throw new FileNotFoundException(""); }
         return JsonSerializer.Deserialize<T>(File.ReadAllText(target)) ?? throw new Exception();
     }
+
+    private static string GetLibraryPath(MediaType type) => Path.Join(ConfigPath, NameConverter.GetFolderName(type));
 }
