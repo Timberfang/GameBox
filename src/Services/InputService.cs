@@ -20,6 +20,18 @@ public static class Input
         return output;
     }
 
+    public static Game ChooseGame()
+    {
+        string ChosenGame = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Choose a [blue]game[/]:")
+                .AddChoices(FileService.GetMedia(MediaType.Game))
+                .UseConverter(Path.GetFileNameWithoutExtension)
+        );
+
+        return FileService.LoadMedia<Game>(ChosenGame, MediaType.Game);
+    }
+
     private static GamePlatform GetGamePlatform()
     {
         return AnsiConsole.Prompt(

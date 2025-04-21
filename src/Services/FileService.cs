@@ -31,12 +31,20 @@ public static class FileService
         Serialize(media, TargetPath);
     }
 
-    public static T LoadMedia<T>(string name, MediaType type)
+    public static T LoadMedia<T>(string name, MediaType type) where T : IMedia
     {
         Initialize(type);
         string TargetPath = Path.Combine(GetLibraryPath(type), name);
         if (!TargetPath.EndsWith(".json")) { TargetPath += ".json"; }
         return Deserialize<T>(TargetPath);
+    }
+
+    public static IEnumerable<T> LoadAllMedia<T>(MediaType type) where T : IMedia
+    {
+        Initialize(type);
+        List<T> output = [];
+        foreach (string file in GetMedia(type)) { output.Add(LoadMedia<T>(file, type)); }
+        return output;
     }
 
     private static void Initialize(MediaType type)
