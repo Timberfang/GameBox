@@ -27,7 +27,7 @@ public static class FileService
     public static void SaveMedia<T>(T media) where T : IMedia
     {
         Initialize(media.Type);
-        string TargetPath = Path.Combine(GetLibraryPath(media.Type), media.Name + ".json");
+        string TargetPath = Path.Combine(GetLibraryPath(media.Type), GetSafePath(media.Name) + ".json");
         Serialize(media, TargetPath);
     }
 
@@ -59,4 +59,12 @@ public static class FileService
     }
 
     private static string GetLibraryPath(MediaType type) => Path.Join(ConfigPath, LibraryName[type]);
+
+    private static string GetSafePath(string path)
+    {
+        // Colons get special handling, see https://wiki.no-intro.org/index.php?title=Naming_Convention#Characters
+        path = path.Replace(": ", " - ");
+        foreach (char c in Path.GetInvalidFileNameChars()) { path = path.Replace(c, '_'); }
+        return path;
+    }
 }
