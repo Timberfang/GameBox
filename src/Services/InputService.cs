@@ -4,7 +4,7 @@ using GameBox.Media;
 
 namespace GameBox.Services;
 
-public static class Input
+public static class InputService
 {
     public static Game NewGame()
     {

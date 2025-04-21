@@ -6,7 +6,7 @@ namespace GameBox
     {
         static void Main(string[] args)
         {
-            var TestGame = Input.NewGame();
+            var TestGame = InputService.NewGame();
             Console.Clear();
             Console.WriteLine(TestGame.ToString());
         }
