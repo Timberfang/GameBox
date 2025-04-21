@@ -11,6 +11,12 @@ public static class FileService
         IgnoreReadOnlyProperties = true,
         WriteIndented = true
     };
+    private static readonly Dictionary<MediaType, string> LibraryName = new()
+    {
+        { MediaType.Game, "games" },
+        { MediaType.Movie, "movies" },
+        { MediaType.Show, "shows" }
+    };
 
     public static IEnumerable<string> GetMedia(MediaType type)
     {
@@ -52,5 +58,5 @@ public static class FileService
         return JsonSerializer.Deserialize<T>(File.ReadAllText(target)) ?? throw new Exception();
     }
 
-    private static string GetLibraryPath(MediaType type) => Path.Join(ConfigPath, NameConverter.GetFolderName(type));
+    private static string GetLibraryPath(MediaType type) => Path.Join(ConfigPath, LibraryName[type]);
 }

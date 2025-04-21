@@ -1,4 +1,5 @@
 using Spectre.Console;
+using Humanizer;
 using GameBox.Media;
 
 namespace GameBox.Services;
@@ -24,8 +25,8 @@ public static class Input
         return AnsiConsole.Prompt(
             new SelectionPrompt<GamePlatform>()
                 .Title("Choose a [blue]platform[/] for this game:")
-                .AddChoices(Game.GamePlatformName.Keys)
-                .UseConverter(x => Game.GamePlatformName[x])
+                .AddChoices(Enum.GetValues<GamePlatform>())
+                .UseConverter(x => x.Humanize())
         );
     }
 }

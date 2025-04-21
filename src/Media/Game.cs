@@ -1,4 +1,6 @@
-﻿namespace GameBox.Media;
+﻿using Humanizer;
+
+namespace GameBox.Media;
 
 public class Game : IMedia
 {
@@ -9,15 +11,6 @@ public class Game : IMedia
     public string? Cover { get; set; }
     public GamePlatform Platform { get; set; }
     public MediaType Type => MediaType.Game;
-
-    public static readonly Dictionary<GamePlatform, string> GamePlatformName = new()
-    {
-        { GamePlatform.PC, "PC (Windows)" },
-        { GamePlatform.N3DS, "Nintendo 3DS" },
-        { GamePlatform.N64, "Nintendo 64" },
-        { GamePlatform.NSwitch, "Nintendo Switch" },
-        { GamePlatform.NWiiU, "Nintendo Wii U" }
-    };
 
     public Game()
     {
@@ -37,6 +30,6 @@ public class Game : IMedia
 
     public override string ToString()
     {
-        return $"{Name} ({Year}) - {GamePlatformName[Platform]}" + Environment.NewLine + Environment.NewLine + Description + Environment.NewLine;
+        return $"{Name} ({Year}) - {Platform.Humanize()}" + Environment.NewLine + Environment.NewLine + Description + Environment.NewLine;
     }
 }
