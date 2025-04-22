@@ -11,45 +11,45 @@ public static class FileService
         IgnoreReadOnlyProperties = true,
         WriteIndented = true
     };
-    private static readonly Dictionary<MediaType, string> LibraryName = new()
+    private static readonly Dictionary<Type, string> LibraryName = new()
     {
-        { MediaType.Game, "games" },
-        { MediaType.Movie, "movies" },
-        { MediaType.Show, "shows" }
+        { typeof(Game), "games" },
+        // { typeof(Media), "movies" },
+        // { typeof(Show), "shows" }
     };
 
-    public static IEnumerable<string> GetMedia(MediaType type)
+    public static IEnumerable<string> GetMedia<T>() where T : IMedia
     {
-        Initialize(type);
-        return Directory.GetFiles(GetLibraryPath(type), "*.json");
+        Initialize<T>();
+        return Directory.GetFiles(GetLibraryPath<T>(), "*.json");
     }
 
     public static void SaveMedia<T>(T media) where T : IMedia
     {
-        Initialize(media.Type);
-        string TargetPath = Path.Combine(GetLibraryPath(media.Type), GetSafePath(media.Name) + ".json");
+        Initialize<T>();
+        string TargetPath = Path.Combine(GetLibraryPath<T>(), GetSafePath(media.Name) + ".json");
         Serialize(media, TargetPath);
     }
 
-    public static T LoadMedia<T>(string name, MediaType type) where T : IMedia
+    public static T LoadMedia<T>(string name) where T : IMedia
     {
-        Initialize(type);
-        string TargetPath = Path.Combine(GetLibraryPath(type), name);
+        Initialize<T>();
+        string TargetPath = Path.Combine(GetLibraryPath<T>(), name);
         if (!TargetPath.EndsWith(".json")) { TargetPath += ".json"; }
         return Deserialize<T>(TargetPath);
     }
 
-    public static IEnumerable<T> LoadAllMedia<T>(MediaType type) where T : IMedia
+    public static IEnumerable<T> LoadAllMedia<T>() where T : IMedia
     {
-        Initialize(type);
+        Initialize<T>();
         List<T> output = [];
-        foreach (string file in GetMedia(type)) { output.Add(LoadMedia<T>(file, type)); }
+        foreach (string file in GetMedia<T>()) { output.Add(LoadMedia<T>(file)); }
         return output;
     }
 
-    private static void Initialize(MediaType type)
+    private static void Initialize<T>() where T : IMedia
     {
-        string[] Directories = [ConfigPath, GetLibraryPath(type)];
+        string[] Directories = [ConfigPath, GetLibraryPath<T>()];
 
         foreach (string DirectoryPath in Directories) { Directory.CreateDirectory(DirectoryPath); }
     }
@@ -66,7 +66,10 @@ public static class FileService
         return JsonSerializer.Deserialize<T>(File.ReadAllText(target)) ?? throw new Exception();
     }
 
-    private static string GetLibraryPath(MediaType type) => Path.Join(ConfigPath, LibraryName[type]);
+    private static string GetLibraryPath<T>() where T : IMedia
+    {
+        return Path.Join(ConfigPath, LibraryName[typeof(T)]);
+    }
 
     private static string GetSafePath(string path)
     {

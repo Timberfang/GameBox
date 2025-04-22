@@ -6,12 +6,6 @@ namespace GameBox.Services;
 
 public static class InputService
 {
-    // TODO: Update dictionary as types added
-    private static readonly Dictionary<Type, MediaType> TypeToEnum = new()
-    {
-        { typeof(Game), MediaType.Game }
-    };
-
     public static Game NewGame()
     {
         Game output = NewMedia<Game>();
@@ -21,16 +15,14 @@ public static class InputService
 
     public static T ChooseMedia<T>() where T : IMedia
     {
-        MediaType type = TypeToEnum[typeof(T)];
-
         string ChosenMedia = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title($"Choose a [blue]{nameof(T)}[/]:")
-                .AddChoices(FileService.GetMedia(type))
+                .AddChoices(FileService.GetMedia<T>())
                 .UseConverter(Path.GetFileNameWithoutExtension)
         );
 
-        return FileService.LoadMedia<T>(ChosenMedia, type);
+        return FileService.LoadMedia<T>(ChosenMedia);
     }
 
     private static GamePlatform GetGamePlatform()
