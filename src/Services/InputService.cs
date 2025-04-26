@@ -16,7 +16,7 @@ public static class InputService
     {
         string ChosenMedia = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title($"Choose a [blue]{nameof(T)}[/]:")
+                .Title($"Choose a {nameof(T)}:")
                 .AddChoices(FileService.GetMedia<T>())
                 .UseConverter(Path.GetFileNameWithoutExtension)
         );
@@ -28,7 +28,7 @@ public static class InputService
     {
         return AnsiConsole.Prompt(
             new SelectionPrompt<GamePlatform>()
-                .Title("Choose a [blue]platform[/] for this game:")
+                .Title("Choose a platform for this game:")
                 .AddChoices(Enum.GetValues<GamePlatform>())
                 .UseConverter(x => Game.PlatformFriendlyName[x])
         );
