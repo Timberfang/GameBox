@@ -1,14 +1,11 @@
 ﻿using GameBox.Services;
 
-namespace GameBox
+namespace GameBox;
+
+internal static class Program
 {
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            var TestGame = InputService.NewGame();
-            Console.Clear();
-            Console.WriteLine(TestGame.ToString());
-        }
-    }
+	private static async Task Main(string[] args)
+	{
+		await InputService.StartCommandLine(args);
+	}
 }
