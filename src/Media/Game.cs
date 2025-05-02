@@ -1,4 +1,4 @@
-﻿namespace GameBox.Media;
+namespace GameBox.Media;
 
 public class Game : IMedia
 {

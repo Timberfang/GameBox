@@ -1,4 +1,4 @@
-﻿using GameBox.Services;
+using GameBox.Services;
 
 namespace GameBox;
 
