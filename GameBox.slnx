@@ -1,0 +1,3 @@
+﻿<Solution>
+    <Project Path="src\GameBox.csproj" Type="Classic C#"/>
+</Solution>
