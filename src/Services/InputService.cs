@@ -1,6 +1,6 @@
-using GameBox.Media;
 using System.CommandLine;
 using System.Text.RegularExpressions;
+using GameBox.Media;
 
 namespace GameBox.Services;
 
@@ -8,33 +8,33 @@ public static partial class InputService
 {
 	public static async Task<int> StartCommandLine(string[] args)
 	{
-		Option<string> nameOption = new Option<string>("--name");
-		Option<string> descriptionOption = new Option<string>("--description", getDefaultValue: () => string.Empty);
-		Option<int> yearOption = new Option<int>("--year", getDefaultValue: () => 1970);
-		Option<string> creatorOption = new Option<string>("--creator", getDefaultValue: () => string.Empty);
-		Option<string> typeOption = new Option<string>("--type");
+		Option<string> nameOption = new("--name");
+		Option<string> descriptionOption = new("--description", () => string.Empty);
+		Option<int> yearOption = new("--year", () => 1970);
+		Option<string> creatorOption = new("--creator", () => string.Empty);
+		Option<string> typeOption = new("--type");
 		nameOption.IsRequired = true;
 		typeOption.IsRequired = true;
-		
-		RootCommand rootCommand = new RootCommand("Media manager.");
-		Command createCommand = new Command("create")
+
+		RootCommand rootCommand = new("Media manager.");
+		Command createCommand = new("create")
 		{
 			nameOption,
 			descriptionOption,
 			yearOption,
 			creatorOption
 		};
-		Command readCommand = new Command("read")
+		Command readCommand = new("read")
 		{
 			nameOption,
 			typeOption
 		};
 		rootCommand.AddCommand(createCommand);
 		rootCommand.AddCommand(readCommand);
-		
+
 		createCommand.SetHandler((name, description, year, creator) =>
 			{
-				Game output = new Game(name, description, GamePlatform.PC, year, creator);
+				Game output = new(name, description, GamePlatform.PC, year, creator);
 				FileService.SaveMedia(output);
 			},
 			nameOption, descriptionOption, yearOption, creatorOption);
@@ -59,10 +59,10 @@ public static partial class InputService
 				}
 			},
 			nameOption, typeOption);
-		
+
 		return await rootCommand.InvokeAsync(args);
 	}
 
-    [GeneratedRegex(@"(?<=').+(?=')")]
-    private static partial Regex FileExceptionRegex();
+	[GeneratedRegex(@"(?<=').+(?=')")]
+	private static partial Regex FileExceptionRegex();
 }
