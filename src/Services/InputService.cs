@@ -45,7 +45,8 @@ public static partial class InputService
 					IMedia output = type switch
 					{
 						"game" => FileService.LoadMedia<Game>(name),
-						// "movie" => FileService.LoadMedia<Movie>(name),
+						"movie" => FileService.LoadMedia<Movie>(name),
+						"show" => FileService.LoadMedia<Show>(name),
 						_ => throw new ArgumentOutOfRangeException(nameof(type))
 					};
 
