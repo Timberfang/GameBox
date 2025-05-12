@@ -8,13 +8,14 @@ public static partial class InputService
 {
 	public static async Task<int> StartCommandLine(string[] args)
 	{
-		Option<string> nameOption = new("--name");
+		Option<string> nameOption = new("--name") { IsRequired = true };
 		Option<string> descriptionOption = new("--description", () => string.Empty);
 		Option<int> yearOption = new("--year", () => 1970);
 		Option<string> creatorOption = new("--creator", () => string.Empty);
-		Option<string> typeOption = new("--type");
-		nameOption.IsRequired = true;
-		typeOption.IsRequired = true;
+		Option<string> typeOption = new("--type") { IsRequired = true };
+		typeOption.FromAmong("game", "movie", "show");
+		nameOption.AddAlias("-n");
+		typeOption.AddAlias("-t");
 
 		RootCommand rootCommand = new("Media manager.");
 		Command createCommand = new("create")
