@@ -30,8 +30,13 @@ public static partial class InputService
 			nameOption,
 			typeOption
 		};
+		Command listCommand = new("list")
+		{
+			typeOption
+		};
 		rootCommand.AddCommand(createCommand);
 		rootCommand.AddCommand(readCommand);
+		rootCommand.AddCommand(listCommand);
 
 		createCommand.SetHandler((name, description, year, creator) =>
 			{
@@ -61,6 +66,18 @@ public static partial class InputService
 				}
 			},
 			nameOption, typeOption);
+		listCommand.SetHandler((type) =>
+		{
+			IEnumerable<string> media = type switch
+			{
+				"game" => FileService.ListMedia<Game>(),
+				"movie" => FileService.ListMedia<Movie>(),
+				"show" => FileService.ListMedia<Show>(),
+				_ => throw new ArgumentOutOfRangeException(nameof(type))
+			};
+
+			Console.WriteLine(string.Join(Environment.NewLine, media));
+		}, typeOption);
 
 		return await rootCommand.InvokeAsync(args);
 	}

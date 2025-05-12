@@ -49,6 +49,12 @@ public static class FileService
 		return output;
 	}
 
+	public static IEnumerable<string> ListMedia<T>() where T : IMedia
+	{
+		// OfType removes null reference warning
+		return Directory.GetFiles(GetLibraryPath<T>()).Select(Path.GetFileNameWithoutExtension).OfType<string>();
+	}
+
 	private static void Initialize<T>() where T : IMedia
 	{
 		string[] directories = [ConfigPath, GetLibraryPath<T>()];
