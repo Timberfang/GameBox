@@ -1,6 +1,6 @@
-using GameBox.Config.Path;
+using MediaBox.Config.Path;
 
-namespace GameBox.Config;
+namespace MediaBox.Config;
 
 internal record class ImageConfig(string Name)
 {

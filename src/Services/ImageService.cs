@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
-using GameBox.Config;
-using GameBox.Config.Path;
+using MediaBox.Config;
+using MediaBox.Config.Path;
 
-namespace GameBox.Services;
+namespace MediaBox.Services;
 
 internal static class ImageService
 {

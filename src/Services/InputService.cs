@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
 using ConsoleAppFramework;
-using GameBox.Media;
+using MediaBox.Media;
 
-namespace GameBox.Services;
+namespace MediaBox.Services;
 
 public static partial class InputService
 {

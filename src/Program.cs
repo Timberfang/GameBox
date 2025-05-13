@@ -1,6 +1,6 @@
-using GameBox.Services;
+using MediaBox.Services;
 
-namespace GameBox;
+namespace MediaBox;
 
 internal static class Program
 {

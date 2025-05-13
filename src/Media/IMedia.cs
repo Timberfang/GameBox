@@ -1,4 +1,4 @@
-namespace GameBox.Media;
+namespace MediaBox.Media;
 
 public interface IMedia
 {

@@ -1,8 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using GameBox.Media;
+using MediaBox.Media;
 
-namespace GameBox.Services;
+namespace MediaBox.Services;
 
 [JsonSourceGenerationOptions(UseStringEnumConverter = true, WriteIndented = true)]
 [JsonSerializable(typeof(IMedia))]

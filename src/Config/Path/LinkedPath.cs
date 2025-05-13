@@ -1,4 +1,4 @@
-namespace GameBox.Config.Path;
+namespace MediaBox.Config.Path;
 
 internal class LinkedPath(string Source, string Destination)
 {
