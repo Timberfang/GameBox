@@ -11,20 +11,14 @@ internal static class ImageService
 		if (!Directory.Exists(destination)) Directory.CreateDirectory(destination);
 		string targetPath = Path.Combine(destination, config.Name);
 		if (!Directory.Exists(targetPath)) Directory.CreateDirectory(targetPath);
-		Regex nameRegex = new Regex(@$"{config.Name} \((\d\d\d\d)\)");
+		Regex nameRegex = new(@$"{config.Name} \((\d\d\d\d)\)");
 
 		foreach (FilteredPath source in config.Paths)
 		{
-			if (!Directory.Exists(source.Path))
-			{
-				continue;
-			}
+			if (!Directory.Exists(source.Path)) continue;
 
 			IEnumerable<string> sourceFiles = source.GetFiles();
-			foreach (string file in sourceFiles)
-			{
-				File.Move(file, Path.Join(targetPath, file));
-			}
+			foreach (string file in sourceFiles) File.Move(file, Path.Join(targetPath, file));
 		}
 
 		string[] targetFiles = Directory.EnumerateFiles(targetPath).ToArray();
