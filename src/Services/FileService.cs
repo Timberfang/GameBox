@@ -1,17 +1,19 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using GameBox.Media;
 
 namespace GameBox.Services;
 
+[JsonSourceGenerationOptions(UseStringEnumConverter = true, WriteIndented = true)]
+[JsonSerializable(typeof(IMedia))]
+[JsonSerializable(typeof(Game))]
+[JsonSerializable(typeof(Movie))]
+[JsonSerializable(typeof(Show))]
+public partial class MediaContext : JsonSerializerContext;
+
 public static class FileService
 {
 	private static readonly string ConfigPath = Path.Join(Environment.CurrentDirectory, "config");
-
-	private static readonly JsonSerializerOptions JsonOptions = new()
-	{
-		IgnoreReadOnlyProperties = true,
-		WriteIndented = true
-	};
 
 	private static readonly Dictionary<Type, string> LibraryName = new()
 	{
@@ -20,20 +22,20 @@ public static class FileService
 		// { typeof(Show), "shows" }
 	};
 
-	public static IEnumerable<string> GetMedia<T>() where T : IMedia
+	private static string[] GetMedia<T>() where T : IMedia
 	{
 		Initialize<T>();
 		return Directory.GetFiles(GetLibraryPath<T>(), "*.json");
 	}
 
-	public static void SaveMedia<T>(T media) where T : IMedia
+	public static void SaveMedia<T>(T media) where T : class, IMedia
 	{
 		Initialize<T>();
 		string targetPath = Path.Combine(GetLibraryPath<T>(), GetSafePath(media.Name) + ".json");
 		Serialize(media, targetPath);
 	}
 
-	public static T LoadMedia<T>(string name) where T : IMedia
+	public static T LoadMedia<T>(string name) where T : class, IMedia
 	{
 		Initialize<T>();
 		string targetPath = Path.Combine(GetLibraryPath<T>(), name);
@@ -41,7 +43,7 @@ public static class FileService
 		return Deserialize<T>(targetPath);
 	}
 
-	public static IEnumerable<T> LoadAllMedia<T>() where T : IMedia
+	public static IEnumerable<T> LoadAllMedia<T>() where T : class, IMedia
 	{
 		Initialize<T>();
 		List<T> output = [];
@@ -49,10 +51,10 @@ public static class FileService
 		return output;
 	}
 
-	public static IEnumerable<string> ListMedia<T>() where T : IMedia
+	public static IEnumerable<string> ListMedia<T>() where T : class, IMedia
 	{
 		// OfType removes null reference warning
-		return Directory.GetFiles(GetLibraryPath<T>()).Select(Path.GetFileNameWithoutExtension).OfType<string>();
+		return GetMedia<T>().Select(Path.GetFileNameWithoutExtension).OfType<string>();
 	}
 
 	private static void Initialize<T>() where T : IMedia
@@ -62,16 +64,17 @@ public static class FileService
 		foreach (string directoryPath in directories) Directory.CreateDirectory(directoryPath);
 	}
 
-	private static void Serialize<T>(T obj, string target)
+	private static void Serialize<T>(T obj, string target) where T : class, IMedia
 	{
 		if (File.Exists(target)) throw new InvalidOperationException("");
-		File.WriteAllText(target, JsonSerializer.Serialize(obj, JsonOptions));
+		File.WriteAllText(target, JsonSerializer.Serialize(obj, typeof(T), MediaContext.Default));
 	}
 
-	private static T Deserialize<T>(string target)
+	private static T Deserialize<T>(string target) where T : class, IMedia
 	{
 		if (!File.Exists(target)) throw new FileNotFoundException($"File at '{target}' not found.");
-		return JsonSerializer.Deserialize<T>(File.ReadAllText(target)) ?? throw new Exception();
+		return JsonSerializer.Deserialize(File.ReadAllText(target), typeof(T), MediaContext.Default) as T ??
+		       throw new Exception();
 	}
 
 	private static string GetLibraryPath<T>() where T : IMedia

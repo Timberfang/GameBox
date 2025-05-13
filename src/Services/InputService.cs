@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using ConsoleAppFramework;
 using GameBox.Media;
@@ -18,6 +17,11 @@ public static partial class InputService
 
 	[GeneratedRegex(@"(?<=').+(?=')")]
 	private static partial Regex FileExceptionRegex();
+
+	private static bool IsValidCommand(string command)
+	{
+		return ((string[]) ["game", "movie", "show"]).Contains(command);
+	}
 
 	private static class Commands
 	{
@@ -39,11 +43,14 @@ public static partial class InputService
 		/// </summary>
 		/// <param name="name">-n, Title.</param>
 		/// <param name="type">-t, Media Type.</param>
-		public static void Read(string name,
-			[AllowedValues("game", "movie", "show",
-				ErrorMessage = "Type must be one of the following: 'game', 'movie', 'show'.")]
-			string type)
+		public static void Read(string name, string type)
 		{
+			if (!IsValidCommand(type))
+			{
+				Console.Error.WriteLine("Type must be one of the following: 'game', 'movie', 'show'.");
+				return;
+			}
+
 			try
 			{
 				IMedia output = type switch
@@ -68,11 +75,14 @@ public static partial class InputService
 		///     List media
 		/// </summary>
 		/// <param name="type">-t, Media Type.</param>
-		public static void List(
-			[AllowedValues("game", "movie", "show",
-				ErrorMessage = "Type must be one of the following: 'game', 'movie', 'show'.")]
-			string type)
+		public static void List(string type)
 		{
+			if (!IsValidCommand(type))
+			{
+				Console.Error.WriteLine("Type must be one of the following: 'game', 'movie', 'show'.");
+				return;
+			}
+
 			IEnumerable<string> media = type switch
 			{
 				"game" => FileService.ListMedia<Game>(),
