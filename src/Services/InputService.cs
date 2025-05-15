@@ -18,9 +18,11 @@ public static partial class InputService
 	[GeneratedRegex(@"(?<=').+(?=')")]
 	private static partial Regex FileExceptionRegex();
 
-	private static bool IsValidCommand(string command)
+	private static MediaType GetMediaType(string command)
 	{
-		return ((string[]) ["game", "movie", "show"]).Contains(command);
+		if (Enum.TryParse(command, true, out MediaType mediaType)) return mediaType;
+
+		throw new ArgumentException($"Invalid command: {command}");
 	}
 
 	private static class Commands
@@ -45,19 +47,13 @@ public static partial class InputService
 		/// <param name="type">-t, Media Type.</param>
 		public static void Read(string name, string type)
 		{
-			if (!IsValidCommand(type))
-			{
-				Console.Error.WriteLine("Type must be one of the following: 'game', 'movie', 'show'.");
-				return;
-			}
-
 			try
 			{
-				IMedia output = type switch
+				IMedia output = GetMediaType(type) switch
 				{
-					"game" => FileService.LoadMedia<Game>(name),
-					"movie" => FileService.LoadMedia<Movie>(name),
-					"show" => FileService.LoadMedia<Show>(name),
+					MediaType.Game => FileService.LoadMedia<Game>(name),
+					MediaType.Movie => FileService.LoadMedia<Movie>(name),
+					MediaType.Show => FileService.LoadMedia<Show>(name),
 					_ => throw new ArgumentOutOfRangeException(nameof(type))
 				};
 
@@ -67,7 +63,11 @@ public static partial class InputService
 			{
 				string filePath = FileExceptionRegex().Match(e.Message).Value;
 				string fileName = Path.GetFileNameWithoutExtension(filePath);
-				Console.WriteLine($"No media of type '{type}' named '{fileName}' was found.");
+				Console.Error.WriteLine($"No media of type '{type}' named '{fileName}' was found.");
+			}
+			catch (ArgumentException)
+			{
+				Console.Error.WriteLine("Type must be one of the following: 'game', 'movie', 'show'.");
 			}
 		}
 
@@ -77,21 +77,22 @@ public static partial class InputService
 		/// <param name="type">-t, Media Type.</param>
 		public static void List(string type)
 		{
-			if (!IsValidCommand(type))
+			try
+			{
+				IEnumerable<string> media = GetMediaType(type) switch
+				{
+					MediaType.Game => FileService.ListMedia<Game>(),
+					MediaType.Movie => FileService.ListMedia<Movie>(),
+					MediaType.Show => FileService.ListMedia<Show>(),
+					_ => throw new ArgumentOutOfRangeException(nameof(type))
+				};
+
+				Console.WriteLine(string.Join(Environment.NewLine, media));
+			}
+			catch (ArgumentException)
 			{
 				Console.Error.WriteLine("Type must be one of the following: 'game', 'movie', 'show'.");
-				return;
 			}
-
-			IEnumerable<string> media = type switch
-			{
-				"game" => FileService.ListMedia<Game>(),
-				"movie" => FileService.ListMedia<Movie>(),
-				"show" => FileService.ListMedia<Show>(),
-				_ => throw new ArgumentOutOfRangeException(nameof(type))
-			};
-
-			Console.WriteLine(string.Join(Environment.NewLine, media));
 		}
 	}
 }
