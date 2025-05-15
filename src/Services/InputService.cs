@@ -34,10 +34,33 @@ public static partial class InputService
 		/// <param name="description">-d, Long description, up to one paragraph.</param>
 		/// <param name="year">-y, Year of release.</param>
 		/// <param name="creator">-c, Creator(s).</param>
-		public static void Create(string name, string description, int year, string creator)
+		/// <param name="type">-t, Media Type.</param>
+		public static void Create(string name, string description, int year, string creator, string type)
 		{
-			Game output = new(name, description, GamePlatform.PC, year, creator);
-			FileService.SaveMedia(output);
+			try
+			{
+				switch (GetMediaType(type))
+				{
+					case MediaType.Game:
+						Game game = new(name, description, GamePlatform.PC, year, creator);
+						FileService.SaveMedia(game);
+						break;
+					case MediaType.Movie:
+						Movie movie = new(name, description, year, creator);
+						FileService.SaveMedia(movie);
+						break;
+					case MediaType.Show:
+						Show show = new(name, description, year, creator);
+						FileService.SaveMedia(show);
+						break;
+					default:
+						throw new ArgumentOutOfRangeException(nameof(type));
+				}
+			}
+			catch (ArgumentException)
+			{
+				Console.Error.WriteLine("Type must be one of the following: 'game', 'movie', 'show'.");
+			}
 		}
 
 		/// <summary>
