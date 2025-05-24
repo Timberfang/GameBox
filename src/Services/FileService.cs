@@ -14,6 +14,7 @@ public partial class MediaContext : JsonSerializerContext;
 public static class FileService
 {
 	private static readonly string ConfigPath = Path.Join(Environment.CurrentDirectory, "config");
+	private static readonly Dictionary<Type, string[]> MediaCache = new();
 
 	private static readonly Dictionary<Type, string> LibraryName = new()
 	{
@@ -51,10 +52,18 @@ public static class FileService
 		return output;
 	}
 
-	public static IEnumerable<string> ListMedia<T>() where T : class, IMedia
+	public static IEnumerable<string> ListMedia<T>(bool dropCache = false) where T : class, IMedia
 	{
+		Type type = typeof(T);
+
+		// Draw from cache
+		if (!dropCache && MediaCache.TryGetValue(type, out string[]? value)) return value;
+
+		// Type not present in cache, or dropCache == true
 		// OfType removes null reference warning
-		return GetMedia<T>().Select(Path.GetFileNameWithoutExtension).OfType<string>();
+		value = GetMedia<T>().Select(Path.GetFileNameWithoutExtension).OfType<string>().ToArray();
+		MediaCache[type] = value;
+		return value;
 	}
 
 	private static void Initialize<T>() where T : IMedia
