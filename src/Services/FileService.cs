@@ -17,9 +17,9 @@ public static class FileService
 
 	private static readonly Dictionary<Type, string> LibraryName = new()
 	{
-		{ typeof(Game), "games" }
-		// { typeof(Media), "movies" },
-		// { typeof(Show), "shows" }
+		{ typeof(Game), "games" },
+		{ typeof(Movie), "movies" },
+		{ typeof(Show), "shows" }
 	};
 
 	private static string[] GetMedia<T>() where T : IMedia

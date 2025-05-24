@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
+using Avalonia;
 using ConsoleAppFramework;
+using MediaBox.GUI;
 using MediaBox.Media;
 
 namespace MediaBox.Services;
@@ -13,6 +15,24 @@ public static partial class InputService
 		app.Add("read", Commands.Read);
 		app.Add("list", Commands.List);
 		app.Run(args);
+	}
+
+	// Initialization code. Don't use any Avalonia, third-party APIs or any
+	// SynchronizationContext-reliant code before AppMain is called: things aren't initialized
+	// yet and stuff might break.
+	[STAThread]
+	public static void StartGui(string[] args)
+	{
+		BuildGui().StartWithClassicDesktopLifetime(args);
+	}
+
+	// Avalonia configuration, don't remove; also used by visual designer.
+	internal static AppBuilder BuildGui()
+	{
+		return AppBuilder.Configure<App>()
+			.UsePlatformDetect()
+			.WithInterFont()
+			.LogToTrace();
 	}
 
 	[GeneratedRegex(@"(?<=').+(?=')")]
